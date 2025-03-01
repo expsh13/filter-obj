@@ -1,4 +1,4 @@
-import type { Accessess } from "../functions";
+import type { Accessess } from "../functions/type";
 
 export const accessess: Accessess = {
   JR横須賀線: ["鎌倉駅", "西大井駅", "武蔵小杉駅", "東逗子駅"],

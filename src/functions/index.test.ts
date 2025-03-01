@@ -1,4 +1,9 @@
-import { filterLocation, formatFilterLocation } from "./index";
+import {
+  type Access,
+  filterLocation,
+  formatFilterAccess,
+  formatFilterLocation,
+} from "./index";
 import { describe, expect, test } from "vitest";
 import type { ContextFacility, Locations } from "./type";
 
@@ -254,31 +259,37 @@ const facility: ContextFacility = {
   ],
 };
 
-test("formatFilterAccess", () => {
-  // const data: Access = {
-  //   train: [
-  //     {
-  //       line: "山手線", // 路線名
-  //       station_name: "目白駅", // 駅名
-  //       gate: "", // 改札口
-  //       time_to_walk: 5, // 歩くのにかかる時間
-  //       distance_from_station: 10, // 駅からの距離
-  //     },
-  //   ],
-  //   bus: [
-  //     {
-  //       line: "バス路線", // 路線名
-  //       station_name: "駅名", // 駅名
-  //       gate: "", // 改札口
-  //       bus_ride_time: null, // バス乗車時間
-  //       // TODO: 重複??
-  //       bus_stop: "バス名", // バス停名
-  //       time_to_walk: 5, // 歩くのにかかる時間
-  //       distance_from_station: 5, // 駅からの距離
-  //     },
-  //   ],
-  // };
-  // formatFilterAccess(data);
+describe("formatFilterAccessテスト", () => {
+  test("同じ路線で駅が2つ以上あり、そのうち空プロパティがある場合はプロパティを削除。", () => {
+    const data: Access = {
+      山手線: {
+        "": Number.POSITIVE_INFINITY,
+        目白駅: Number.POSITIVE_INFINITY,
+      },
+    };
+    const expectedData: Access = {
+      山手線: {
+        目白駅: Number.POSITIVE_INFINITY,
+      },
+    };
+    const formattedData = formatFilterAccess(data);
+    expect(formattedData).toEqual(expectedData);
+  });
+  test("駅が一つしかなく、空のプロパティの場合は、access.tsの該当する値を入れて補完。", () => {
+    const data: Access = {
+      山手線: {
+        "": Number.POSITIVE_INFINITY,
+      },
+    };
+    const expectedData: Access = {
+      山手線: {
+        目白駅: Number.POSITIVE_INFINITY,
+        恵比寿駅: Number.POSITIVE_INFINITY,
+      },
+    };
+    const formattedData = formatFilterAccess(data);
+    expect(formattedData).toEqual(expectedData);
+  });
 });
 
 describe("formatFilterLocationテスト", () => {

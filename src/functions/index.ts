@@ -18,6 +18,7 @@ export type Access = {
 };
 
 import { locations } from "../data/locations";
+import { accessess } from "../data/access";
 import type { CareLevel, ContextFacility, Locations } from "./type";
 
 export const formatFilterLocation = (data: Locations): Locations => {
@@ -78,7 +79,40 @@ export const filterLocation = (
 };
 
 export const formatFilterAccess = (filter: Access): Access => {
-  return filter;
+  const formattedFilter: Access = { ...filter };
+
+  // 各路線をループ
+  for (const line in formattedFilter) {
+    const stations = formattedFilter[line];
+    const stationEntries = Object.entries(stations);
+
+    // 駅が1つだけで、空の場合
+    if (stationEntries.length === 1 && stationEntries[0][0] === "") {
+      // access.tsから該当する路線の値で置き換え
+      // アクセスデータが存在する場合のみ置き換え
+      if (accessess?.[line]) {
+        // 配列を{station: Infinity}の形式に変換
+        formattedFilter[line] = accessess[line].reduce((acc, station) => {
+          acc[station] = Number.POSITIVE_INFINITY;
+          return acc;
+        }, {} as Record<string, number>);
+      } else {
+        // アクセスデータが存在しない場合は空のオブジェクトを設定
+        formattedFilter[line] = {};
+      }
+      continue;
+    }
+
+    // 駅が複数ある場合の処理
+    for (const station in stations) {
+      // 空の駅プロパティを削除
+      if (station === "") {
+        delete stations[station];
+      }
+    }
+  }
+
+  return formattedFilter;
 };
 
 // export const filterAccess = (
