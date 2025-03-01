@@ -1,4 +1,4 @@
-import type { Locations } from "../functions";
+import type { Locations } from "../functions/type";
 
 export const locations: Locations = {
   北海道: {
