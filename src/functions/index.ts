@@ -139,18 +139,59 @@ type Filter = Partial<
   }
 >;
 
-const facilityFilter = (
+import { locations } from "../data/locations";
+
+export const formatLocation = (data: Locations): Locations => {
+  const formattedData: Locations = { ...data };
+
+  for (const prefecture in formattedData) {
+    const cities = formattedData[prefecture];
+    const cityEntries = Object.entries(cities);
+
+    // 市区町村が1つだけで、空の場合
+    if (
+      cityEntries.length === 1 &&
+      cityEntries[0][0] === "" &&
+      (cityEntries[0][1].length === 0 ||
+        (cityEntries[0][1].length === 1 && cityEntries[0][1][0] === ""))
+    ) {
+      // locations.tsから該当する都道府県の値で置き換え
+      formattedData[prefecture] = locations[prefecture];
+      continue;
+    }
+
+    // 市区町村が複数ある場合の処理
+    for (const city in cities) {
+      // 空の市区町村プロパティを削除
+      if (city === "") {
+        delete cities[city];
+        continue;
+      }
+
+      // 市区町村の配列が空か、[""]の場合、locations.tsの値で補完
+      if (
+        cities[city].length === 0 ||
+        (cities[city].length === 1 && cities[city][0] === "")
+      ) {
+        cities[city] = locations[prefecture][city] || [];
+      }
+    }
+  }
+
+  return formattedData;
+};
+
+export const facilityFilter = (
   data: ContextFacility[],
   filter: Filter
 ): ContextFacility[] => {
   if (!Object.keys(filter).length) {
     return data;
   }
-  console.log(filter);
   return data.filter((facility) => {
     // 都道府県検索
     if (filter.locations) {
-      const filterLocations = filter.locations as Locations;
+      const filterLocations = formatLocation(filter.locations as Locations);
       const { locationPrefecture, locationCity, locationTown } = facility;
 
       if (!filterLocations[locationPrefecture]) return false;
@@ -164,6 +205,8 @@ const facilityFilter = (
       )
         return false;
     }
+
+    // TODO: エラー出ているので後で確認
     // アクセス
     // if (filter.access) {
     //   const filterAccess = filter.access as Access;
