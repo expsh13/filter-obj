@@ -327,6 +327,9 @@ describe("filterAccessテスト", () => {
   });
   test("徒歩条件のみ一致しない", () => {
     const filter: AccessObj = {
+      "": {
+        "": Number.POSITIVE_INFINITY,
+      },
       JR横須賀線: {
         鎌倉駅: 5,
       },

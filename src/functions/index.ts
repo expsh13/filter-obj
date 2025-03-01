@@ -173,58 +173,16 @@ export const facilityFilter = (
   return data.filter((facility) => {
     // 都道府県検索
     if (filter.locations) {
-      const filterLocations = formatFilterLocation(
-        filter.locations as Locations
-      );
-      const { locationPrefecture, locationCity, locationTown } = facility;
-
-      // TODO: ここ入らないかも？？
-      if (!filterLocations[locationPrefecture]) return false;
-      if (!filterLocations[locationPrefecture][locationCity]) return false;
-
-      if (
-        !filterLocations[locationPrefecture][locationCity].includes(
-          locationTown
-        )
-      )
+      const result = filterLocation(filter.locations as Locations, facility);
+      if (!result) {
         return false;
+      }
     }
 
     // アクセス
     if (filter.access) {
-      const filterAccess = formatFilterAccess(filter.access as AccessObj);
-      const access = facility.access;
-
-      let isAccess = false;
-      // train
-      for (const train of access.train) {
-        const { line, station_name, time_to_walk } = train;
-
-        if (!filterAccess[line]) continue;
-
-        // filterAccess[line][station_name]が0の可能性がある
-        if (filterAccess[line][station_name] === undefined) continue;
-
-        if (time_to_walk && filterAccess[line][station_name] < time_to_walk)
-          continue;
-
-        isAccess = true;
-      }
-      // bus
-      for (const bus of access.bus) {
-        const { line, station_name, time_to_walk } = bus;
-
-        if (!filterAccess[line]) continue;
-
-        // filterAccess[line][station_name]が0の可能性がある
-        if (filterAccess[line][station_name] === undefined) continue;
-
-        if (time_to_walk && filterAccess[line][station_name] < time_to_walk)
-          continue;
-
-        isAccess = true;
-      }
-      if (!isAccess) {
+      const result = filterAccess(filter.access as AccessObj, facility.access);
+      if (!result) {
         return false;
       }
     }
