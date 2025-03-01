@@ -194,8 +194,8 @@ export const facilityFilter = (
       const filterLocations = formatLocation(filter.locations as Locations);
       const { locationPrefecture, locationCity, locationTown } = facility;
 
+      // TODO: ここ入らないかも？？
       if (!filterLocations[locationPrefecture]) return false;
-
       if (!filterLocations[locationPrefecture][locationCity]) return false;
 
       if (
