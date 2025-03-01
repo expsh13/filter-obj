@@ -1,5 +1,6 @@
 import {
-  type Access,
+  type AccessObj,
+  filterAccess,
   filterLocation,
   formatFilterAccess,
   formatFilterLocation,
@@ -261,13 +262,13 @@ const facility: ContextFacility = {
 
 describe("formatFilterAccessテスト", () => {
   test("同じ路線で駅が2つ以上あり、そのうち空プロパティがある場合はプロパティを削除。", () => {
-    const data: Access = {
+    const data: AccessObj = {
       山手線: {
         "": Number.POSITIVE_INFINITY,
         目白駅: Number.POSITIVE_INFINITY,
       },
     };
-    const expectedData: Access = {
+    const expectedData: AccessObj = {
       山手線: {
         目白駅: Number.POSITIVE_INFINITY,
       },
@@ -276,12 +277,12 @@ describe("formatFilterAccessテスト", () => {
     expect(formattedData).toEqual(expectedData);
   });
   test("駅が一つしかなく、空のプロパティの場合は、access.tsの該当する値を入れて補完。", () => {
-    const data: Access = {
+    const data: AccessObj = {
       山手線: {
         "": Number.POSITIVE_INFINITY,
       },
     };
-    const expectedData: Access = {
+    const expectedData: AccessObj = {
       山手線: {
         目白駅: Number.POSITIVE_INFINITY,
         恵比寿駅: Number.POSITIVE_INFINITY,
@@ -289,6 +290,50 @@ describe("formatFilterAccessテスト", () => {
     };
     const formattedData = formatFilterAccess(data);
     expect(formattedData).toEqual(expectedData);
+  });
+});
+
+describe("filterAccessテスト", () => {
+  test("filterに当てはまらない", () => {
+    const filter: AccessObj = {
+      山手線: {
+        "": Number.POSITIVE_INFINITY,
+        目白駅: Number.POSITIVE_INFINITY,
+      },
+    };
+    const result = filterAccess(filter, facility.access);
+
+    expect(result).toBe(false);
+  });
+  test("filterの路線一致", () => {
+    const filter: AccessObj = {
+      JR横須賀線: {
+        "": Number.POSITIVE_INFINITY,
+      },
+    };
+    const result = filterAccess(filter, facility.access);
+
+    expect(result).toBe(true);
+  });
+  test("filterの路線・駅一致", () => {
+    const filter: AccessObj = {
+      JR横須賀線: {
+        鎌倉駅: Number.POSITIVE_INFINITY,
+      },
+    };
+    const result = filterAccess(filter, facility.access);
+
+    expect(result).toBe(true);
+  });
+  test("徒歩条件のみ一致しない", () => {
+    const filter: AccessObj = {
+      JR横須賀線: {
+        鎌倉駅: 5,
+      },
+    };
+    const result = filterAccess(filter, facility.access);
+
+    expect(result).toBe(false);
   });
 });
 

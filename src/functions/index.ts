@@ -6,12 +6,12 @@ type Filter = Partial<
     monthlyBudget: number;
     roomArea: [number, number][];
     equipment: Equipment[];
-    access: Access;
+    access: AccessObj;
     locations: Locations;
   }
 >;
 
-export type Access = {
+export type AccessObj = {
   [line: string]: {
     [station: string]: number;
   };
@@ -19,7 +19,13 @@ export type Access = {
 
 import { locations } from "../data/locations";
 import { accessess } from "../data/access";
-import type { CareLevel, ContextFacility, Locations } from "./type";
+import type {
+  Access,
+  CareLevel,
+  ContextFacility,
+  Locations,
+  RemoveOptional,
+} from "./type";
 
 export const formatFilterLocation = (data: Locations): Locations => {
   const formattedData: Locations = { ...data };
@@ -78,8 +84,8 @@ export const filterLocation = (
   return true;
 };
 
-export const formatFilterAccess = (filter: Access): Access => {
-  const formattedFilter: Access = { ...filter };
+export const formatFilterAccess = (filter: AccessObj): AccessObj => {
+  const formattedFilter: AccessObj = { ...filter };
 
   // 各路線をループ
   for (const line in formattedFilter) {
@@ -115,10 +121,47 @@ export const formatFilterAccess = (filter: Access): Access => {
   return formattedFilter;
 };
 
-// export const filterAccess = (
-//   filter: Access,
-//   access: RemoveOptional<Access>
-// ) => {};
+export const filterAccess = (
+  filter: AccessObj,
+  access: RemoveOptional<Access>
+): boolean => {
+  const filterAccess = formatFilterAccess(filter);
+
+  let isAccess = false;
+  // train
+  for (const train of access.train) {
+    const { line, station_name, time_to_walk } = train;
+
+    if (!filterAccess[line]) continue;
+
+    // filterAccess[line][station_name]が0の可能性がある
+    if (filterAccess[line][station_name] === undefined) continue;
+
+    if (time_to_walk && filterAccess[line][station_name] < time_to_walk)
+      continue;
+
+    isAccess = true;
+  }
+  // bus
+  for (const bus of access.bus) {
+    const { line, station_name, time_to_walk } = bus;
+
+    if (!filterAccess[line]) continue;
+
+    // filterAccess[line][station_name]が0の可能性がある
+    if (filterAccess[line][station_name] === undefined) continue;
+
+    if (time_to_walk && filterAccess[line][station_name] < time_to_walk)
+      continue;
+
+    isAccess = true;
+  }
+  if (!isAccess) {
+    return false;
+  }
+
+  return isAccess;
+};
 
 export const facilityFilter = (
   data: ContextFacility[],
@@ -149,7 +192,7 @@ export const facilityFilter = (
 
     // アクセス
     if (filter.access) {
-      const filterAccess = filter.access as Access;
+      const filterAccess = formatFilterAccess(filter.access as AccessObj);
       const access = facility.access;
 
       let isAccess = false;

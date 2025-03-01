@@ -86,7 +86,7 @@ export type CareLevel =
   | "要支援1"
   | "要支援2";
 
-type RemoveOptional<T> = {
+export type RemoveOptional<T> = {
   [K in keyof T]-?: T[K]; // プロパティの ? を外す
 };
 
