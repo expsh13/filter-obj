@@ -155,13 +155,6 @@ const facilityFilter = (
 
       if (!filterLocations[locationPrefecture]) return false;
 
-      // 複数あるときの空対応
-      // if (
-      //   Object.keys(filterLocations[locationPrefecture]).length > 1 &&
-      //   filterLocations[locationPrefecture][""]
-      // ) {
-      // }
-
       if (!filterLocations[locationPrefecture][locationCity]) return false;
 
       if (
@@ -172,43 +165,43 @@ const facilityFilter = (
         return false;
     }
     // アクセス
-    if (filter.access) {
-      const filterAccess = filter.access as Access;
-      const access = facility.access;
+    // if (filter.access) {
+    //   const filterAccess = filter.access as Access;
+    //   const access = facility.access;
 
-      let isAccess = false;
-      // train
-      for (const train of access.train) {
-        const { line, station_name, time_to_walk } = train;
+    //   let isAccess = false;
+    //   // train
+    //   for (const train of access.train) {
+    //     const { line, station_name, time_to_walk } = train;
 
-        if (!filterAccess[line]) continue;
+    //     if (!filterAccess[line]) continue;
 
-        // filterAccess[line][station_name]が0の可能性がある
-        if (filterAccess[line][station_name] === undefined) continue;
+    //     // filterAccess[line][station_name]が0の可能性がある
+    //     if (filterAccess[line][station_name] === undefined) continue;
 
-        if (time_to_walk && filterAccess[line][station_name] < time_to_walk)
-          continue;
+    //     if (time_to_walk && filterAccess[line][station_name] < time_to_walk)
+    //       continue;
 
-        isAccess = true;
-      }
-      // bus
-      for (const bus of access.bus) {
-        const { line, station_name, time_to_walk } = bus;
+    //     isAccess = true;
+    //   }
+    //   // bus
+    //   for (const bus of access.bus) {
+    //     const { line, station_name, time_to_walk } = bus;
 
-        if (!filterAccess[line]) continue;
+    //     if (!filterAccess[line]) continue;
 
-        // filterAccess[line][station_name]が0の可能性がある
-        if (filterAccess[line][station_name] === undefined) continue;
+    //     // filterAccess[line][station_name]が0の可能性がある
+    //     if (filterAccess[line][station_name] === undefined) continue;
 
-        if (time_to_walk && filterAccess[line][station_name] < time_to_walk)
-          continue;
+    //     if (time_to_walk && filterAccess[line][station_name] < time_to_walk)
+    //       continue;
 
-        isAccess = true;
-      }
-      if (!isAccess) {
-        return false;
-      }
-    }
+    //     isAccess = true;
+    //   }
+    //   if (!isAccess) {
+    //     return false;
+    //   }
+    // }
 
     return true;
   });
