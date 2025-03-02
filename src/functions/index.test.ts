@@ -262,6 +262,7 @@ const facility: ContextFacility = {
 
 describe("formatFilterAccessテスト", () => {
   test("同じ路線で駅が2つ以上あり、そのうち空プロパティがある場合はプロパティを削除。", () => {
+    // 準備
     const data: AccessObj = {
       山手線: {
         "": Number.POSITIVE_INFINITY,
@@ -273,10 +274,13 @@ describe("formatFilterAccessテスト", () => {
         目白駅: Number.POSITIVE_INFINITY,
       },
     };
+    // 実行
     const formattedData = formatFilterAccess(data);
+    // 検証
     expect(formattedData).toEqual(expectedData);
   });
   test("駅が一つしかなく、空のプロパティの場合は、access.tsの該当する値を入れて補完。", () => {
+    // 準備
     const data: AccessObj = {
       山手線: {
         "": Number.POSITIVE_INFINITY,
@@ -288,44 +292,53 @@ describe("formatFilterAccessテスト", () => {
         恵比寿駅: Number.POSITIVE_INFINITY,
       },
     };
+    // 実行
     const formattedData = formatFilterAccess(data);
+    // 検証
     expect(formattedData).toEqual(expectedData);
   });
 });
 
 describe("filterAccessテスト", () => {
   test("filterに当てはまらない", () => {
+    // 準備
     const filter: AccessObj = {
       山手線: {
         "": Number.POSITIVE_INFINITY,
         目白駅: Number.POSITIVE_INFINITY,
       },
     };
+    // 実行
     const result = filterAccess(filter, facility.access);
-
+    // 検証
     expect(result).toBe(false);
   });
   test("filterの路線一致", () => {
+    // 準備
     const filter: AccessObj = {
       JR横須賀線: {
         "": Number.POSITIVE_INFINITY,
       },
     };
+    // 実行
     const result = filterAccess(filter, facility.access);
-
+    // 検証
     expect(result).toBe(true);
   });
   test("filterの路線・駅一致", () => {
+    // 準備
     const filter: AccessObj = {
       JR横須賀線: {
         鎌倉駅: Number.POSITIVE_INFINITY,
       },
     };
+    // 実行
     const result = filterAccess(filter, facility.access);
-
+    // 検証
     expect(result).toBe(true);
   });
   test("徒歩条件のみ一致しない", () => {
+    // 準備
     const filter: AccessObj = {
       "": {
         "": Number.POSITIVE_INFINITY,
@@ -334,14 +347,16 @@ describe("filterAccessテスト", () => {
         鎌倉駅: 5,
       },
     };
+    // 実行
     const result = filterAccess(filter, facility.access);
-
+    // 検証
     expect(result).toBe(false);
   });
 });
 
 describe("formatFilterLocationテスト", () => {
   test("同じ都道府県で市区町村が2つ以上あり、そのうち空プロパティがある場合はプロパティを削除。", () => {
+    // 準備
     const data: Locations = {
       北海道: {
         "": [],
@@ -353,7 +368,6 @@ describe("formatFilterLocationテスト", () => {
         ],
       },
     };
-
     const expectedData: Locations = {
       北海道: {
         札幌市: [
@@ -364,11 +378,13 @@ describe("formatFilterLocationテスト", () => {
         ],
       },
     };
-
+    // 実行
     const formattedData = formatFilterLocation(data);
+    // 検証
     expect(formattedData).toEqual(expectedData);
   });
   test("市区町村が一つしかなく、空のプロパティの場合は、location.tsの該当する都道府県の値を入れて補完。", () => {
+    // 準備
     const data: Locations = {
       宮城県: {
         "": [],
@@ -377,7 +393,6 @@ describe("formatFilterLocationテスト", () => {
         "": [""],
       },
     };
-
     const expectedData: Locations = {
       宮城県: {
         仙台市: [
@@ -396,11 +411,13 @@ describe("formatFilterLocationテスト", () => {
         習志野市: ["谷津"],
       },
     };
-
+    // 実行
     const formattedData = formatFilterLocation(data);
+    // 検証
     expect(formattedData).toEqual(expectedData);
   });
   test("町名の配列が空の時はlocation.tsの該当する町名の値に補完", () => {
+    // 準備
     const data: Locations = {
       埼玉県: {
         草加市: [""],
@@ -410,7 +427,6 @@ describe("formatFilterLocationテスト", () => {
         仙台市: [],
       },
     };
-
     const expectedData: Locations = {
       埼玉県: {
         草加市: ["氷川町", "草加二丁目"],
@@ -425,14 +441,16 @@ describe("formatFilterLocationテスト", () => {
         ],
       },
     };
-
+    // 実行
     const formattedData = formatFilterLocation(data);
+    // 検証
     expect(formattedData).toEqual(expectedData);
   });
 });
 
 describe("filterLocationテスト", () => {
   test("filterに当てはまらない", () => {
+    // 準備
     const filter: Locations = {
       北海道: {
         札幌市: [
@@ -454,11 +472,13 @@ describe("filterLocationテスト", () => {
         "": [""],
       },
     };
+    // 実行
     const result = filterLocation(filter, facility);
-
+    // 検証
     expect(result).toBe(false);
   });
   test("filterの県一致", () => {
+    // 準備
     const filter: Locations = {
       北海道: {
         札幌市: [
@@ -479,11 +499,13 @@ describe("filterLocationテスト", () => {
         "": [""],
       },
     };
+    // 実行
     const result = filterLocation(filter, facility);
-
+    // 検証
     expect(result).toBe(true);
   });
   test("filterの県・市区町村一致", () => {
+    // 準備
     const filter: Locations = {
       北海道: {
         札幌市: [
@@ -504,11 +526,13 @@ describe("filterLocationテスト", () => {
         "": [""],
       },
     };
+    // 実行
     const result = filterLocation(filter, facility);
-
+    // 検証
     expect(result).toBe(true);
   });
   test("filterの県・市区町村・町名一致", () => {
+    // 準備
     const filter: Locations = {
       北海道: {
         札幌市: [
@@ -529,8 +553,9 @@ describe("filterLocationテスト", () => {
         "": [""],
       },
     };
+    // 実行
     const result = filterLocation(filter, facility);
-
+    // 検証
     expect(result).toBe(true);
   });
 });
