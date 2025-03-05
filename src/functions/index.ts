@@ -85,7 +85,7 @@ export const filterLocation = (
 };
 
 export const formatFilterAccess = (filter: AccessObj): AccessObj => {
-  const formattedFilter: AccessObj = { ...filter };
+  const formattedFilter: AccessObj = JSON.parse(JSON.stringify(filter));
 
   // 各路線をループ
   for (const line in formattedFilter) {
@@ -95,7 +95,6 @@ export const formatFilterAccess = (filter: AccessObj): AccessObj => {
     // 駅が1つだけで、空の場合
     if (stationEntries.length === 1 && stationEntries[0][0] === "") {
       // access.tsから該当する路線の値で置き換え
-      // アクセスデータが存在する場合のみ置き換え
       if (accessess?.[line]) {
         // 配列を{station: Infinity}の形式に変換
         formattedFilter[line] = accessess[line].reduce((acc, station) => {
@@ -114,6 +113,11 @@ export const formatFilterAccess = (filter: AccessObj): AccessObj => {
       // 空の駅プロパティを削除
       if (station === "") {
         delete stations[station];
+        continue;
+      }
+      // nullの値をInfinityに変換
+      if (stations[station] === null) {
+        stations[station] = Number.POSITIVE_INFINITY;
       }
     }
   }

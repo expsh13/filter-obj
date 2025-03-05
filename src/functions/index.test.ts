@@ -311,7 +311,7 @@ describe("filterAccessテスト", () => {
     // 実行
     const result = filterAccess(filter, facility.access);
     // 検証
-    expect(result).toBe(false);
+    expect(result).toBeFalsy();
   });
   test("filterの路線一致", () => {
     // 準備
@@ -323,7 +323,7 @@ describe("filterAccessテスト", () => {
     // 実行
     const result = filterAccess(filter, facility.access);
     // 検証
-    expect(result).toBe(true);
+    expect(result).toBeTruthy();
   });
   test("filterの路線・駅一致", () => {
     // 準備
@@ -335,7 +335,7 @@ describe("filterAccessテスト", () => {
     // 実行
     const result = filterAccess(filter, facility.access);
     // 検証
-    expect(result).toBe(true);
+    expect(result).toBeTruthy();
   });
   test("徒歩条件のみ一致しない", () => {
     // 準備
@@ -350,7 +350,7 @@ describe("filterAccessテスト", () => {
     // 実行
     const result = filterAccess(filter, facility.access);
     // 検証
-    expect(result).toBe(false);
+    expect(result).toBeFalsy();
   });
 });
 
@@ -475,7 +475,7 @@ describe("filterLocationテスト", () => {
     // 実行
     const result = filterLocation(filter, facility);
     // 検証
-    expect(result).toBe(false);
+    expect(result).toBeFalsy();
   });
   test("filterの県一致", () => {
     // 準備
@@ -502,7 +502,7 @@ describe("filterLocationテスト", () => {
     // 実行
     const result = filterLocation(filter, facility);
     // 検証
-    expect(result).toBe(true);
+    expect(result).toBeTruthy();
   });
   test("filterの県・市区町村一致", () => {
     // 準備
@@ -529,7 +529,7 @@ describe("filterLocationテスト", () => {
     // 実行
     const result = filterLocation(filter, facility);
     // 検証
-    expect(result).toBe(true);
+    expect(result).toBeTruthy();
   });
   test("filterの県・市区町村・町名一致", () => {
     // 準備
@@ -556,6 +556,6 @@ describe("filterLocationテスト", () => {
     // 実行
     const result = filterLocation(filter, facility);
     // 検証
-    expect(result).toBe(true);
+    expect(result).toBeTruthy();
   });
 });
